@@ -21,6 +21,8 @@ public class KafkaProducer {
     private static final String bootstrapServers = "localhost:9092";
     private static final String topic = "indexer-topic";
 
+    private static long counter = 0;
+
     public static void main(String[] args) {
 
 //        final Args args = new Args();
@@ -55,8 +57,8 @@ public class KafkaProducer {
         executorService.scheduleAtFixedRate(() -> {
             try {
                 // Read file content
-                String fileContent = readFile(filePath).substring(0,50);
-
+                String fileContent = readFile(filePath);
+                System.out.println("Start writing to kafka producer....");
                 // Produce message to Kafka topic
                 producer.send(new ProducerRecord<>(topic, fileContent));
                 System.out.println("Message sent to Kafka: " + fileContent);
@@ -64,7 +66,7 @@ public class KafkaProducer {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }, 0, 10, TimeUnit.SECONDS); // Send every 5 seconds
+        }, 0, 5, TimeUnit.SECONDS); // Send every 5 seconds
 
         // Add shutdown hook to gracefully close resources
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
@@ -74,9 +76,29 @@ public class KafkaProducer {
     }
 
     private static String readFile(String filePath) throws IOException {
-        Path path = Paths.get(filePath);
-        byte[] fileBytes = Files.readAllBytes(path);
-        return new String(fileBytes);
+        String line = "";
+        try{
+            System.out.println("Start reading file....");
+            RandomAccessFile file = new RandomAccessFile(filePath, "r");
+            System.out.println("Start reading file....");
+            file.seek(counter);
+            System.out.println("Start reading file....");
+            line = file.readLine();
+            System.out.println("Start reading file....");
+            long offset = file.getFilePointer();
+            System.out.println("Start reading file....");
+            counter = offset;
+
+
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+//        Path path = Paths.get(filePath);
+//        byte[] fileBytes = Files.r(path);
+//        return new String(fileBytes);
+        System.out.println("Start reading file....");
+        return line;
     }
 
 
