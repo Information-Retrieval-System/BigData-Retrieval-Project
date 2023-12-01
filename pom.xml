@@ -4,7 +4,7 @@
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>ca.uwaterloo.cs451</groupId>
-    <artifactId>assignments</artifactId>
+    <artifactId>CS651Project</artifactId>
     <packaging>jar</packaging>
     <name>project</name>
     <version>1.0</version>
@@ -95,11 +95,67 @@
     </build>
 
     <dependencies>
+<!--        <dependency>-->
+<!--            <groupId>io.bespin</groupId>-->
+<!--            <artifactId>bespin</artifactId>-->
+<!--            <version>1.0.4</version>-->
+<!--        </dependency>-->
+
         <dependency>
-            <groupId>io.bespin</groupId>
-            <artifactId>bespin</artifactId>
-            <version>1.0.4</version>
+            <groupId>org.apache.flink</groupId>
+            <artifactId>flink-scala_2.11</artifactId>
+            <version>1.14.6</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.flink</groupId>
+            <artifactId>flink-streaming-scala_2.11</artifactId>
+            <version>1.14.6</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.flink</groupId>
+            <artifactId>flink-clients</artifactId>
+            <version>1.18.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.flink</groupId>
+            <artifactId>flink-connector-kafka</artifactId>
+            <version>1.16.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.kafka</groupId>
+            <artifactId>kafka-clients</artifactId>
+            <version>3.6.0</version>
+        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.apache.kafka</groupId>-->
+<!--            <artifactId>kafka-utils</artifactId>-->
+<!--            <version>0.1.1</version>-->
+<!--        </dependency>-->
+        <!-- Logging -->
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>2.11.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>1.7.25</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>1.7.25</version>
+        </dependency>
+        <!-- Zookeeper -->
+        <dependency>
+            <groupId>com.101tec</groupId>
+            <artifactId>zkclient</artifactId>
+            <version>0.10</version>
+        </dependency>
+
+
+
     </dependencies>
 
 </project>
