@@ -25,7 +25,7 @@ C. Starting Cassandra (We are using Cassandra Docker)
 ------------------------------------------------------------------------------------------------------
 
 
-II. Running all the service
+II. Running all the services
 
 ------------------------------------------------------------------------------------------------------
 A. Running Kafka Producer
