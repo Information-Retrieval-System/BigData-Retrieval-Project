@@ -4,11 +4,11 @@
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>ca.uwaterloo.cs451</groupId>
-    <artifactId>CS651Project</artifactId>
+    <artifactId>assignments</artifactId>
     <packaging>jar</packaging>
-    <name>project</name>
+    <name>assignments</name>
     <version>1.0</version>
-    <description>CS 651 Project</description>
+    <description>Assignments for CS 451 Data-Intensive Distributed Computing (Winter 2022) at the University of Waterloo</description>
     <url>https://www.student.cs.uwaterloo.ca/~cs451</url>
 
     <repositories>
@@ -77,7 +77,7 @@
                                  to unpack the jar. -->
                             <filters>
                                 <filter>
-                                    <artifact>*:*</artifact>
+                                    <artifact>:</artifact>
                                     <excludes>
                                         <exclude>META-INF/*.SF</exclude>
                                         <exclude>META-INF/*.DSA</exclude>
@@ -95,27 +95,51 @@
     </build>
 
     <dependencies>
-<!--        <dependency>-->
-<!--            <groupId>io.bespin</groupId>-->
-<!--            <artifactId>bespin</artifactId>-->
-<!--            <version>1.0.4</version>-->
-<!--        </dependency>-->
+        <dependency>
+            <groupId>io.bespin</groupId>
+            <artifactId>bespin</artifactId>
+            <version>1.0.4</version>
+        </dependency>
 
-        <dependency>
-            <groupId>org.apache.flink</groupId>
-            <artifactId>flink-scala_2.11</artifactId>
-            <version>1.14.6</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.flink</groupId>
-            <artifactId>flink-streaming-scala_2.11</artifactId>
-            <version>1.14.6</version>
-        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.apache.flink/flink-streaming-java -->
+        <!--  <dependency>-->
+        <!--    <groupId>org.apache.flink</groupId>-->
+        <!--    <artifactId>flink-streaming-java</artifactId>-->
+        <!--    <version>1.18.0</version>-->
+        <!--  </dependency>-->
+        <!--  <dependency>-->
+        <!--    <groupId>org.apache.flink</groupId>-->
+        <!--    <artifactId>flink-java</artifactId>-->
+        <!--    <version>1.18.0</version>-->
+        <!--  </dependency>-->
+
+
+        <!--        <dependency>-->
+        <!--            <groupId>io.bespin</groupId>-->
+        <!--            <artifactId>bespin</artifactId>-->
+        <!--            <version>1.0.4</version>-->
+        <!--        </dependency>-->
+
+        <!--  <dependency>-->
+        <!--    <groupId>org.apache.flink</groupId>-->
+        <!--    <artifactId>flink-scala_2.11</artifactId>-->
+        <!--    <version>1.14.6</version>-->
+        <!--  </dependency>-->
+        <!--  <dependency>-->
+        <!--    <groupId>org.apache.flink</groupId>-->
+        <!--    <artifactId>flink-streaming-scala_2.11</artifactId>-->
+        <!--    <version>1.14.6</version>-->
+        <!--&lt;!&ndash;  </dependency>&ndash;&gt;-->
         <dependency>
             <groupId>org.apache.flink</groupId>
             <artifactId>flink-clients</artifactId>
-            <version>1.18.0</version>
+            <version>1.16.0</version>
         </dependency>
+        <!--  <dependency>-->
+        <!--    <groupId>org.apache.flink</groupId>-->
+        <!--    <artifactId>flink-core</artifactId>-->
+        <!--    <version>1.18.0</version>-->
+        <!--  </dependency>-->
         <dependency>
             <groupId>org.apache.flink</groupId>
             <artifactId>flink-connector-kafka</artifactId>
@@ -126,11 +150,60 @@
             <artifactId>kafka-clients</artifactId>
             <version>3.6.0</version>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>org.apache.kafka</groupId>-->
-<!--            <artifactId>kafka-utils</artifactId>-->
-<!--            <version>0.1.1</version>-->
-<!--        </dependency>-->
+        <!--  &lt;!&ndash; https://mvnrepository.com/artifact/org.apache.flink/flink-connector-cassandra &ndash;&gt;-->
+        <!--  <dependency>-->
+        <!--  <groupId>org.apache.flink</groupId>-->
+        <!--  <artifactId>flink-connector-cassandra_2.12</artifactId>-->
+        <!--  <version>3.1.0-1.17</version>-->
+        <!--  </dependency>-->
+        <dependency>
+            <groupId>org.apache.flink</groupId>
+            <artifactId>flink-streaming-scala_2.11</artifactId>
+            <version>1.4.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.flink</groupId>
+            <artifactId>flink-connector-cassandra_2.11</artifactId>
+            <version>1.4.2</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.apache.flink/flink-hadoop-compatibility -->
+        <dependency>
+            <groupId>org.apache.flink</groupId>
+            <artifactId>flink-hadoop-compatibility_2.12</artifactId>
+            <version>1.16.3</version>
+        </dependency>
+        <dependency>
+            <groupId>com.datastax.oss</groupId>
+            <artifactId>java-driver-core-shaded</artifactId>
+            <version>4.5.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.datastax.cassandra</groupId>
+            <artifactId>cassandra-driver-mapping</artifactId>
+            <version>3.11.5</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.apache.flink/flink-shaded-guava -->
+        <!--  <dependency>-->
+        <!--    <groupId>org.apache.flink</groupId>-->
+        <!--    <artifactId>flink-shaded-guava</artifactId>-->
+        <!--    <version>31.1-jre-17.0</version>-->
+        <!--  </dependency>-->
+        <!--  <dependency>-->
+        <!--    <groupId>org.apache.flink</groupId>-->
+        <!--    <artifactId>flink-shaded-guava</artifactId>-->
+        <!--    <version>30.1.1-jre-15.0</version>-->
+        <!--  </dependency>-->
+        <!--  <dependency>-->
+        <!--    <groupId>org.apache.flink</groupId>-->
+        <!--    <artifactId>flink-shaded-guava</artifactId>-->
+        <!--    <version>31.1-jre-17.0</version>-->
+        <!--  </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>org.apache.kafka</groupId>-->
+        <!--            <artifactId>kafka-utils</artifactId>-->
+        <!--            <version>0.1.1</version>-->
+        <!--        </dependency>-->
         <!-- Logging -->
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
@@ -142,20 +215,18 @@
             <artifactId>slf4j-log4j12</artifactId>
             <version>1.7.25</version>
         </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-            <version>1.7.25</version>
-        </dependency>
+        <!--        <dependency>-->
+        <!--            <groupId>org.slf4j</groupId>-->
+        <!--            <artifactId>slf4j-log4j12</artifactId>-->
+        <!--            <version>1.7.25</version>-->
+        <!--        </dependency>-->
         <!-- Zookeeper -->
         <dependency>
             <groupId>com.101tec</groupId>
             <artifactId>zkclient</artifactId>
             <version>0.10</version>
         </dependency>
-
-
-
     </dependencies>
+
 
 </project>
