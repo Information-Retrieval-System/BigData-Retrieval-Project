@@ -68,9 +68,6 @@ public class KafkaProducer {
                 e.printStackTrace();
             }
         }, 0, 5, TimeUnit.MICROSECONDS); // Send every 5 seconds
-
-
-
         // Add shutdown hook to gracefully close resources
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             executorService.shutdown();
@@ -97,6 +94,7 @@ public class KafkaProducer {
             offset = file.getFilePointer();
 
             file.close();
+
 
         }
         catch (IOException e) {
