@@ -1,0 +1,44 @@
+I. Setting up all the service
+
+------------------------------------------------------------------------------------------------------
+A. Starting Kafka
+
+1. Download Kafka version 3.6.0 from https://kafka.apache.org/downloads
+2. Start Zookeeper: bin/zookeeper-server-start.sh config/zookeeper.properties
+3. Start Kafka server: bin/kafka-server-start.sh config/server.properties
+4. Create topic named "indexer-topic" : bin/kafka-topics.sh --create --topic indexer-topic --broker-list localhost:9092
+
+
+B. Starting Flink
+1. Download Flink version 1.16.3 from https://flink.apache.org/downloads/
+2. Start Flink cluster: ./bin/start-cluster.sh
+
+
+C. Starting Cassandra (We are using Cassandra Docker)
+
+1. Pull Cassandra docker image: docker pull cassandra:latest
+2. Start the cassandra docker using "docker run" command or from docker app UI.
+3. Bring CQLSH shell: docker exec -it "name of the cassandra container" cqlsh
+4. Now, create the keyspace and tables present in the Info-Retrieval-Boot project schema.cql file
+
+
+------------------------------------------------------------------------------------------------------
+
+
+II. Running all the service
+
+------------------------------------------------------------------------------------------------------
+A. Running Kafka Producer
+
+
+
+B. Running Flink
+
+
+
+C. Cassandra + Spring boot
+
+Just start the springboot application (Info-Retrieval-Boot project) by running mvn clean package and running IndexerApplication.java file
+
+
+------------------------------------------------------------------------------------------------------
