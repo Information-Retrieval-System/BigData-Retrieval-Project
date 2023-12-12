@@ -1,3 +1,10 @@
+/*
+From github:
+https://github.com/echauchot/tpcds-benchmark-flink
+by echauchot
+ */
+
+
 package ca.uwaterloo.cs451.index;
 
 import org.apache.flink.api.common.ExecutionConfig;
