@@ -9,6 +9,8 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.*;
 
@@ -51,14 +53,13 @@ public class KafkaProducer {
 
         // Create the Kafka producer
         Producer<String, String> producer = new org.apache.kafka.clients.producer.KafkaProducer<>(properties);
-
+        System.out.println("Start writing to kafka producer....");
         // Schedule a task to read and send file content periodically
         ScheduledExecutorService executorService = Executors.newScheduledThreadPool(1);
         executorService.scheduleAtFixedRate(() -> {
             try {
                 // Read file content
                 String fileContent = readFile(filePath);
-                System.out.println("Start writing to kafka producer....");
                 // Produce message to Kafka topic
                 producer.send(new ProducerRecord<>(topic, fileContent));
                 System.out.println("Message sent to Kafka: " + fileContent);
@@ -66,8 +67,7 @@ public class KafkaProducer {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }, 0, 5, TimeUnit.SECONDS); // Send every 5 seconds
-
+        }, 0, 5, TimeUnit.MICROSECONDS); // Send every 5 seconds
         // Add shutdown hook to gracefully close resources
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             executorService.shutdown();
@@ -77,17 +77,23 @@ public class KafkaProducer {
 
     private static String readFile(String filePath) throws IOException {
         String line = "";
+        long offset = 0;
         try{
-            System.out.println("Start reading file....");
+
+           // System.out.println("Start reading file....");
             RandomAccessFile file = new RandomAccessFile(filePath, "r");
-            System.out.println("Start reading file....");
             file.seek(counter);
-            System.out.println("Start reading file....");
             line = file.readLine();
-            System.out.println("Start reading file....");
-            long offset = file.getFilePointer();
-            System.out.println("Start reading file....");
-            counter = offset;
+            List<String> tokens = io.bespin.java.util.Tokenizer.tokenize(line.toString());
+            while(tokens.isEmpty()){
+                line = file.readLine();
+                tokens = io.bespin.java.util.Tokenizer.tokenize(line.toString());
+                Iterator iter = tokens.iterator();
+                while (iter.hasNext())  line += iter.next();
+            }
+            offset = file.getFilePointer();
+
+            file.close();
 
 
         }
@@ -97,8 +103,9 @@ public class KafkaProducer {
 //        Path path = Paths.get(filePath);
 //        byte[] fileBytes = Files.r(path);
 //        return new String(fileBytes);
-        System.out.println("Start reading file....");
-        return line;
+        String res = counter + " " + line;
+        counter = offset;
+        return res;
     }
 
 
@@ -130,4 +137,4 @@ public class KafkaProducer {
 //            // Close the producer to release resources
 //            producer.close();
 //        }
-    }
+}
