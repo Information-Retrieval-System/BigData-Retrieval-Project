@@ -50,3 +50,4 @@ Just start the springboot application (Info-Retrieval-Boot project) by running m
 
 
 ------------------------------------------------------------------------------------------------------
+This file is also present in BigData-Retrieval-Project
