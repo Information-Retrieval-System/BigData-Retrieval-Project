@@ -108,7 +108,6 @@ import org.apache.flink.api.common.functions.MapFunction;
 import org.apache.flink.api.common.functions.ReduceFunction;
 import org.apache.flink.api.java.DataSet;
 import org.apache.flink.api.java.ExecutionEnvironment;
-import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.api.java.tuple.Tuple3;
 import org.apache.flink.core.fs.FileSystem;
 
@@ -117,7 +116,7 @@ public class AvgDocumentLengthJob
     public static void main(String[] args) throws Exception {
         final ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
 
-        DataSet<String> text = env.readTextFile("/Users/krishthek/Documents/uWaterloo/cs651/BigData-Retrieval-Project/data/Shakespeare.txt");
+        DataSet<String> text = env.readTextFile("/Users/shakti/Desktop/University_of_Waterloo/Fall2023/CS651/Project/Information-Retrieval-System/BigData-Retrieval-Project/data/Shakespeare.txt").setParallelism(1);
 
         DataSet<Tuple3<String, Integer, Integer>> lineCount = text
                 .map(new MapFunction<String, Tuple3<String, Integer, Integer>>() {
@@ -125,23 +124,23 @@ public class AvgDocumentLengthJob
                     public Tuple3<String, Integer, Integer> map(String s) throws Exception {
                         return Tuple3.of("DocInfo", 1, s.split("\\s+").length);
                     }
-                })
+                }).setParallelism(1)
                 .groupBy(0)
                 .reduce(new ReduceFunction<Tuple3<String, Integer, Integer>>() {
                     @Override
                     public Tuple3<String, Integer, Integer> reduce(Tuple3<String, Integer, Integer> t1, Tuple3<String, Integer, Integer> t2) throws Exception {
                         return Tuple3.of(t1.f0, t1.f1+t2.f1, t1.f2+t2.f2);
                     }
-                })
+                }).setParallelism(1)
                 .map(new MapFunction<Tuple3<String, Integer, Integer>, Tuple3<String, Integer, Integer>>() {
                     @Override
                     public Tuple3<String, Integer, Integer> map(Tuple3<String, Integer, Integer> z) throws Exception {
                         return Tuple3.of(z.f0, z.f1, (int) z.f2/z.f1);
                     }
-                });
+                }).setParallelism(1);
 
         //lineCount.print();
-        lineCount.writeAsText("/Users/krishthek/Documents/uWaterloo/cs651/BigData-Retrieval-Project/data/Avg-dl.txt", FileSystem.WriteMode.OVERWRITE).setParallelism(1);
+        lineCount.writeAsText("/Users/shakti/Desktop/University_of_Waterloo/Fall2023/CS651/Project/Information-Retrieval-System/BigData-Retrieval-Project/data/Avg-dl.txt", FileSystem.WriteMode.OVERWRITE).setParallelism(1);
         env.execute("Avg Document Length Job");
 
 

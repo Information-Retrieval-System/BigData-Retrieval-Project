@@ -2,14 +2,10 @@ package ca.uwaterloo.cs451.index;
 
 
 import org.apache.flink.api.common.eventtime.WatermarkStrategy;
-import org.apache.flink.api.common.functions.FilterFunction;
 import org.apache.flink.api.common.functions.FlatMapFunction;
 import org.apache.flink.api.common.functions.MapFunction;
-import org.apache.flink.api.common.functions.ReduceFunction;
 import org.apache.flink.api.common.serialization.SimpleStringSchema;
 import org.apache.flink.api.java.functions.KeySelector;
-import org.apache.flink.api.java.tuple.Tuple2;
-import org.apache.flink.api.java.tuple.Tuple3;
 import org.apache.flink.api.java.tuple.Tuple4;
 import org.apache.flink.connector.kafka.source.KafkaSource;
 import org.apache.flink.connector.kafka.source.enumerator.initializer.OffsetsInitializer;
@@ -17,20 +13,10 @@ import org.apache.flink.core.fs.FileSystem;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.datastream.KeyedStream;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
+import org.apache.flink.util.Collector;
 
-import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors;
-
-import ca.uwaterloo.cs451.index.Document;
-import ca.uwaterloo.cs451.index.DocumentInfo;
-import ca.uwaterloo.cs451.index.IndexEntry;
-import org.apache.flink.streaming.api.windowing.triggers.CountTrigger;
-import org.apache.flink.streaming.api.windowing.windows.TimeWindow;
-import org.apache.flink.util.Collector;
 
 public class Indexer1 {
 
@@ -44,23 +30,26 @@ public class Indexer1 {
         // Kafka properties
 		KafkaSource<String> source = KafkaSource.<String>builder()
 				.setBootstrapServers("localhost:9092")
-				.setTopics("indexer-topic")
-				.setGroupId("my-group")
-				.setStartingOffsets(OffsetsInitializer.latest())
+				.setTopics("indexer-topic-two")
+				.setGroupId("my-group-two")
+				.setStartingOffsets(OffsetsInitializer.earliest())
 				.setValueOnlyDeserializer(new SimpleStringSchema())
 				.build();
 
-                env.fromSource(source, WatermarkStrategy.noWatermarks(), "Kafka Source");
+                //env.fromSource(source, WatermarkStrategy.forMonotonousTimestamps(), "Kafka Source");
 
 		DataStream<Document> indexStream = env
 				.fromSource(
 						source,
-						WatermarkStrategy.noWatermarks(), "kafka Stream"
+						WatermarkStrategy.forMonotonousTimestamps(), "kafka Stream"
 				).setParallelism(1).map(new MapFunction<String, ca.uwaterloo.cs451.index.Document>() {
 					@Override
 					public ca.uwaterloo.cs451.index.Document map(String value) {
 						List<String> tokens = BetterTokenizer.tokenize(value.toString()); // Add kafka source
-						return new ca.uwaterloo.cs451.index.Document(tokens.get(0), tokens);
+                        System.out.println("Docid Map: " +tokens.get(0));
+                        String docId = tokens.get(0);
+                        tokens.remove(0);
+						return new ca.uwaterloo.cs451.index.Document(docId, tokens);
 					}
 				});
 
@@ -105,6 +94,7 @@ public class Indexer1 {
                     //(term, docID, tf, doclen)
                     collector.collect(Tuple4.of(word,docId, COUNTS.get(word), docLength));
                 }
+                System.out.println("Docid FLATMAP: " +docId);
             }
 
             private String createIndex(String content) {
@@ -127,7 +117,7 @@ public class Indexer1 {
                 count++;
                 return encodedLength;
             }
-        });
+        }).setParallelism(1);
 
         KeyedStream<Tuple4<String, String, Integer, Integer>,String> keyedStream = indexedStream.keyBy(new KeySelector<Tuple4<String, String, Integer, Integer>, String>() {
             @Override
@@ -136,9 +126,10 @@ public class Indexer1 {
             }
         });
 
+        // Thread.sleep(Time.seconds(100).toMilliseconds());
         //avgDocLengthStream.print("Running Average Document Length");
-        keyedStream.writeAsText("/Users/krishthek/Documents/uWaterloo/cs651/BigData-Retrieval-Project/data/PostingsTuples1.txt", FileSystem.WriteMode.OVERWRITE).setParallelism(1);
-
+        keyedStream.writeAsText("/Users/shakti/Desktop/University_of_Waterloo/Fall2023/CS651/Project/Information-Retrieval-System/BigData-Retrieval-Project/data/PostingsTuples1.txt", FileSystem.WriteMode.OVERWRITE).setParallelism(1);
+        //keyedStream.print();
         env.execute("Stream Indexing1");
     }
 }

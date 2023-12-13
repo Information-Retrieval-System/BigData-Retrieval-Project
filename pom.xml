@@ -4,9 +4,9 @@
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>ca.uwaterloo.cs451</groupId>
-    <artifactId>assignments</artifactId>
+    <artifactId>projectcs651</artifactId>
     <packaging>jar</packaging>
-    <name>assignments</name>
+    <name>projectcs651</name>
     <version>1.0</version>
     <description>Assignments for CS 451 Data-Intensive Distributed Computing (Winter 2022) at the University of Waterloo</description>
     <url>https://www.student.cs.uwaterloo.ca/~cs451</url>

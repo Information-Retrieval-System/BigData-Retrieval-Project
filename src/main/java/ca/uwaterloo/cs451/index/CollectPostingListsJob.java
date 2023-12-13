@@ -1,20 +1,13 @@
 package ca.uwaterloo.cs451.index;
 
-import io.bespin.java.util.Tokenizer;
 import org.apache.flink.api.common.functions.MapFunction;
 import org.apache.flink.api.common.functions.ReduceFunction;
 import org.apache.flink.api.java.DataSet;
 import org.apache.flink.api.java.ExecutionEnvironment;
-import org.apache.flink.api.java.operators.ReduceOperator;
-import org.apache.flink.api.java.operators.UnsortedGrouping;
 import org.apache.flink.api.java.tuple.Tuple2;
-import org.apache.flink.api.java.tuple.Tuple3;
-import org.apache.flink.api.java.tuple.Tuple4;
 import org.apache.flink.core.fs.FileSystem;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
 import java.util.List;
 
 public class CollectPostingListsJob {
@@ -24,7 +17,7 @@ public class CollectPostingListsJob {
 
         final ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
 
-        DataSet<String> text = env.readTextFile("/Users/krishthek/Documents/uWaterloo/cs651/BigData-Retrieval-Project/data/PostingsTuples1.txt");
+        DataSet<String> text = env.readTextFile("/Users/shakti/Desktop/University_of_Waterloo/Fall2023/CS651/Project/Information-Retrieval-System/BigData-Retrieval-Project/data/PostingsTuples1.txt");
 
         DataSet<Tuple2<String, List<List<String>>>> entire1 = text
                 .map(new MapFunction<String, Tuple2<String, List<List<String>>>>() {
@@ -75,7 +68,7 @@ public class CollectPostingListsJob {
                     });
 
 
-        entire1.writeAsText("/Users/krishthek/Documents/uWaterloo/cs651/BigData-Retrieval-Project/data/PostingLists.txt" ,FileSystem.WriteMode.OVERWRITE).setParallelism(1);
+        entire1.writeAsText("/Users/shakti/Desktop/University_of_Waterloo/Fall2023/CS651/Project/Information-Retrieval-System/BigData-Retrieval-Project/data/PostingLists.txt" ,FileSystem.WriteMode.OVERWRITE).setParallelism(1);
         env.execute("Collect Posting List");
     }
 

@@ -5,14 +5,15 @@ import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.apache.log4j.Logger;
-import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+
+import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
-import java.util.concurrent.*;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class KafkaProducer {
 
@@ -21,7 +22,7 @@ public class KafkaProducer {
 
     private static String filePath = "";
     private static final String bootstrapServers = "localhost:9092";
-    private static final String topic = "indexer-topic";
+    private static final String topic = "indexer-topic-two";
 
     private static long counter = 0;
 
@@ -67,7 +68,7 @@ public class KafkaProducer {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }, 0, 5, TimeUnit.MICROSECONDS); // Send every 5 seconds
+        }, 0, 10, TimeUnit.MICROSECONDS); // Send every 5 seconds
         // Add shutdown hook to gracefully close resources
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             executorService.shutdown();

@@ -5,22 +5,19 @@ import org.apache.flink.api.common.functions.FlatMapFunction;
 import org.apache.flink.api.common.functions.MapFunction;
 import org.apache.flink.api.common.functions.ReduceFunction;
 import org.apache.flink.api.common.serialization.SimpleStringSchema;
-import org.apache.flink.api.java.functions.KeySelector;
 import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.api.java.tuple.Tuple4;
 import org.apache.flink.connector.kafka.source.KafkaSource;
 import org.apache.flink.connector.kafka.source.enumerator.initializer.OffsetsInitializer;
 import org.apache.flink.core.fs.FileSystem;
 import org.apache.flink.streaming.api.datastream.DataStream;
-import org.apache.flink.streaming.api.datastream.KeyedStream;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
-import java.util.*;
-import java.util.stream.Collectors;
-import org.apache.flink.streaming.api.windowing.assigners.TumblingEventTimeWindows;
-import org.apache.flink.streaming.api.windowing.assigners.TumblingProcessingTimeWindows;
-import org.apache.flink.streaming.api.windowing.time.Time;
 import org.apache.flink.util.Collector;
-import org.apache.spark.sql.catalyst.expressions.TimeWindow;
+
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
 
 public class IndexerWind {
 
@@ -67,26 +64,51 @@ public class IndexerWind {
 //            }
 //        });
 
+        // Kafka properties
+        KafkaSource<String> source = KafkaSource.<String>builder()
+                .setBootstrapServers("localhost:9092")
+                .setTopics("indexer-topic-two")
+                .setGroupId("my-group-two")
+                .setStartingOffsets(OffsetsInitializer.earliest())
+                .setValueOnlyDeserializer(new SimpleStringSchema())
+                .build();
 
-        String filePath = "/Users/krishthek/Documents/uWaterloo/cs651/BigData-Retrieval-Project/data/ShakespeareID1.txt";
+        //env.fromSource(source, WatermarkStrategy.forMonotonousTimestamps(), "Kafka Source");
 
-        DataStream<Document> indexStream = env.readTextFile(filePath)
-                .map(new MapFunction<String, ca.uwaterloo.cs451.index.Document>() {
+        DataStream<Document> indexStream = env
+                .fromSource(
+                        source,
+                        WatermarkStrategy.forMonotonousTimestamps(), "kafka Stream"
+                ).setParallelism(1).map(new MapFunction<String, ca.uwaterloo.cs451.index.Document>() {
                     @Override
                     public ca.uwaterloo.cs451.index.Document map(String value) {
-                        String[] words = value.split("\\s+");
-
-                        List<String> myList = new ArrayList();
-                        Collections.addAll(myList, words);
-                        String docID = myList.get(0);
-                        myList.remove(0);
-                        String ss =
-                                myList.stream()
-                                        .collect(Collectors.joining(" "));
-                        List<String> tokens = BetterTokenizer.tokenize(ss);
-                        return new ca.uwaterloo.cs451.index.Document(docID, tokens);
+                        List<String> tokens = BetterTokenizer.tokenize(value.toString()); // Add kafka source
+                        System.out.println("Docid Map: " +tokens.get(0));
+                        String docId = tokens.get(0);
+                        tokens.remove(0);
+                        return new ca.uwaterloo.cs451.index.Document(docId, tokens);
                     }
                 });
+
+//        String filePath = "/Users/krishthek/Documents/uWaterloo/cs651/BigData-Retrieval-Project/data/ShakespeareID1.txt";
+//
+//        DataStream<Document> indexStream = env.readTextFile(filePath)
+//                .map(new MapFunction<String, ca.uwaterloo.cs451.index.Document>() {
+//                    @Override
+//                    public ca.uwaterloo.cs451.index.Document map(String value) {
+//                        String[] words = value.split("\\s+");
+//
+//                        List<String> myList = new ArrayList();
+//                        Collections.addAll(myList, words);
+//                        String docID = myList.get(0);
+//                        myList.remove(0);
+//                        String ss =
+//                                myList.stream()
+//                                        .collect(Collectors.joining(" "));
+//                        List<String> tokens = BetterTokenizer.tokenize(ss);
+//                        return new ca.uwaterloo.cs451.index.Document(docID, tokens);
+//                    }
+//                });
 
         HashMap<String, Integer> COUNTS = new HashMap<>();
 
@@ -187,7 +209,7 @@ public class IndexerWind {
 
 
         //avgDocLengthStream.print("Running Average Document Length");
-        indexedStream.writeAsText("/Users/krishthek/Documents/uWaterloo/cs651/BigData-Retrieval-Project/data/PostingsListsWind.txt", FileSystem.WriteMode.OVERWRITE).setParallelism(1);
+        indexedStream.writeAsText("/Users/shakti/Desktop/University_of_Waterloo/Fall2023/CS651/Project/Information-Retrieval-System/BigData-Retrieval-Project/data/PostingsListsWind.txt", FileSystem.WriteMode.OVERWRITE).setParallelism(1);
 
         env.execute("Stream Indexing 2");
     }

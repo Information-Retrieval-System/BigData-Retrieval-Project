@@ -29,11 +29,11 @@ II. Running all the services
 
 ------------------------------------------------------------------------------------------------------
 A. Running Kafka Producer
+java -cp target/projectcs651-1.0.jar ca.uwaterloo.cs451.kafkaproducer.KafkaProducer data/Shakespeare.txt
 
 
-
-B. Running Flink
-
+B. Running Flink (Submit flink job)
+flink run -c ca.uwaterloo.cs451.index.Indexer1 target/projectcs651-1.0.jar
 
 
 C. Cassandra + Spring boot
