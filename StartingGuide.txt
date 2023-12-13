@@ -33,7 +33,15 @@ java -cp target/projectcs651-1.0.jar ca.uwaterloo.cs451.kafkaproducer.KafkaProdu
 
 
 B. Running Flink (Submit flink job)
-flink run -c ca.uwaterloo.cs451.index.Indexer1 target/projectcs651-1.0.jar
+
+1. Flink job that transforms Kafka stream:
+    flink run -c ca.uwaterloo.cs451.index.Indexer1 target/projectcs651-1.0.jar
+
+2. Flink job to create Posting List:
+    flink run -c ca.uwaterloo.cs451.index.CollectPostingListsJob target/projectcs651-1.0.jar
+
+2. Flink job to calculate Average Document length:
+    flink run -c ca.uwaterloo.cs451.index.AvgDocumentLengthJob target/projectcs651-1.0.jar
 
 
 C. Cassandra + Spring boot
